@@ -26,4 +26,7 @@ class PeopleFactory extends Factory
            'country'=>$this->faker->country,
         ];
     }
+    
+    
 }
+

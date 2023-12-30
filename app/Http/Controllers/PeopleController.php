@@ -6,51 +6,79 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 
-class PeopleController extends Controller
+
+class peopleController extends Controller
 {
-   
- 
-    
-    public function index()
+    public function index(): JsonResponse
     {
-
-            $People = People::all();
+        return response()->json(People::all());
         
-            return response()->json( $People );
-           
     }
-    public function show(Request $request, $id)
-{
+
+    public function show($id): JsonResponse
+    {
         $person = People::find($id);
-         
         return response()->json($person);
+        
+    }
 
-}
-public function create(Request $request)
+    public function create(Request $request)
 {
-   $newperson = new People();
+    $request->validate([
+        'name' => 'required|string',
+        'mobile' => 'required|integer',
+        'city' => 'required|string',
+        'street' => 'required|string',
+        'age' => 'required|integer',
+        'country' => 'required|string',
+    ]);
 
-   $newperson -> name = $request->input('name'); 
-   $newperson -> mobile = $request->input('mobile');
-   $newperson -> city = $request->input('city');
-   $newperson -> street = $request->input('street');
-   $newperson -> age = $request->input('age');
-   $newperson -> country = $request->input('country');
+    $newRecord = People::create([
+        'name' => $request->input('name'),
+        'mobile' => $request->input('mobile'),
+        'city' => $request->input('city'),
+        'street' => $request->input('street'),
+        'age' => $request->input('age'),
+        'country' => $request->input('country'),
+    ]);
 
-   $newperson->save();
-   return response() ->json($newperson);
+    return response()->json($newRecord);
 }
-public function destroy($id)
-  {
-    $person = People::find($id);
-    $person->delete();
-    return response()->json("Rekord usunięty");
-  }
 
+public function edit(Request $request, $id)
+{
+  
+    $request->validate([
+        'name' => 'required|string',
+        'mobile' => 'required|integer',
+        'city' => 'required|string',
+        'street' => 'required|string',
+        'age' => 'required|integer',
+        'country' => 'required|string',
+    ]);
 
+    
+    $people = People::find($id);
 
+    $people->update([
+        'name' => $request->input('name'),
+        'mobile' => $request->input('mobile'),
+        'city' => $request->input('city'),
+        'street' => $request->input('street'),
+        'age' => $request->input('age'),
+        'country' => $request->input('country'),
+    ]);
 
+  
+    return response()->json($people);
+} 
 
+    public function delete($id): JsonResponse
+    {
+        $person = People::find($id);
+        $person->delete();
 
-
+        return response()->json(null);
+        
+    }
 }
